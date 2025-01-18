@@ -1,0 +1,38 @@
+{
+  "name": "nextmatch",
+  "description": "Affiche les matchs du jour",
+  "context": ["Guild"],
+  "options": [
+      {
+          "name": "jeu",
+          "description": "Prochain match du jeu",
+          "required": false,
+          "type": "STRING",
+          "choices": [
+              { "name": "Valorant", "value": "VALORANT" },
+              { "name": "LeagueOfLegends", "value": "LEAGUEOFLEGENDS" },
+              { "name": "TFT", "value": "TFT" },
+              { "name": "Rocket League", "value": "ROCKETLEAGUE" },
+              { "name": "Fortnite", "value": "FORTNITE" },
+              { "name": "Tekken 8", "value": "Tekken8" }
+          ]
+      },
+      {
+          "name": "competition",
+          "description": "Prochain match de la compétition ...",
+          "required": false,
+          "type": "STRING",
+          "choices": [
+              { "name": "VCT", "value": "VCT" },
+              { "name": "VLR", "value": "VLR" },
+              { "name": "VCT-GC", "value": "VCT-GC" },
+              { "name": "LEC", "value": "LEC" },
+              { "name": "LFL", "value": "LFL" },
+              { "name": "DIV2", "value": "DIV2" }
+          ]
+      }
+  ],
+  "permissions": {
+      "slashCommandPermissions": "ALL"
+  }
+}

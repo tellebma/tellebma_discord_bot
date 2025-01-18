@@ -1,0 +1,19 @@
+{
+    "name": "matchs",
+    "description": "Affiche les matchs du jour",
+    "context": ["Guild"],
+    "options": [
+      {
+        "name": "date",
+        "description": "Date du jour que l'on souhaite voir dd/MM/yy.",
+        "required": false,
+        "type": "STRING",
+        "minLength": 8,
+        "maxLength": 8
+      }
+    ],
+    "permissions": {
+      "slashCommandPermissions": "ALL"
+    }
+  }
+  

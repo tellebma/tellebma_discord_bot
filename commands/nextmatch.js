@@ -1,0 +1,69 @@
+const { EmbedBuilder, MessageFlags } = require('discord.js');
+const { createCommande } = require('../fonctions/commands/commandBuilder');
+const { fetchMatches } = require('../fonctions/api/matchs');
+const { generateMatchImage } = require('../fonctions/matchs/image');
+const { parseISO, format } = require('date-fns');
+const { fr } = require('date-fns/locale');
+
+// Charger les données de la commande depuis le fichier JSON
+const commande_json_path = './commands/nextmatch-command.json';
+const commande = createCommande(commande_json_path);
+
+module.exports = {
+    data: commande,
+    async execute(interaction) {
+        try {
+            const jeu = interaction.options.getString('jeu');
+            const compet = interaction.options.getString('competition');
+
+            // Récupération de tous les matchs
+            const matchs = await fetchMatches();
+
+            // Filtrer par jeu et compétition si spécifiés
+            let filteredMatches = matchs;
+            if (jeu) filteredMatches = filteredMatches.filter(match => match.game === jeu);
+            if (compet) filteredMatches = filteredMatches.filter(match => match.competition === compet);
+
+            // Récupérer le prochain match
+            const match = filteredMatches.sort((a, b) => a.start - b.start)[0];
+
+            if (!match) {
+                return await interaction.reply({ content: "Aucun match trouvé pour ces critères.", flags: MessageFlags.Ephemeral });
+            }
+
+            // Générer l'image du match
+            const imageBuffer = await generateMatchImage(match);
+
+            // Créer l'embed Discord
+            const embed = new EmbedBuilder()
+                .setTitle(match.title)
+                .setThumbnail(`attachment://gameIconUrl.png`)
+                .setDescription(`**Compétition :** [${match.compet_clean}](${match.link})\n**Jeu :** ${match.game}`)
+                .addFields(
+                    { name: `   ${match.teamDomicile}`, value: ` `, inline: true },
+                    { name: '   Contre', value: ' ', inline: true },
+                    { name: `   ${match.teamExterieur}`, value: ` `, inline: true },
+                )
+                .setImage(`attachment://match.png`)
+                .setFooter({ text: `Date : ${format(match.start, "EEEE dd MMMM yyyy HH:mm", { locale: fr })}` })
+                .setURL(match.streamLink)
+                .setColor(match.color);
+        imageBuffer = await generateMatchImage(match);
+        attachments.push({ attachment: match.gameIconURL, name: `gameIconUrl.png` })
+        attachments.push({ attachment: imageBuffer, name: `match.png` })
+
+            // Envoyer l'embed avec l'image
+            return await interaction.reply({
+                embeds: [embed],
+                files: [{ attachment: imageBuffer, name: 'match.png' }]
+            });
+
+        } catch (error) {
+            console.error('Erreur lors de l\'exécution de la commande :', error);
+            return await interaction.reply({
+                content: "Une erreur s'est produite lors du traitement de votre demande.",
+                flags: MessageFlags.Ephemeral
+            });
+        }
+    },
+};

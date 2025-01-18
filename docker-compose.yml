@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  tellebma-bot:
+    build:
+      context: ./
+    container_name: tellebma-bot
+    environment:
+      DISCORD_TOKEN: "${DISCORD_TOKEN}"
+      DISCORD_CLIENT_ID: "${DISCORD_CLIENT_ID}"
+      FICHIER_UPDATE_COMMANDE: "${FICHIER_UPDATE_COMMANDE}"
+    volumes:
+      - ./Shared_folder:/usr/src/app/Shared_folder # eviter de delete et remttre les intéractions à chaque fois.
+    restart: always

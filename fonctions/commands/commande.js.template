@@ -1,0 +1,11 @@
+const {  } = require('discord.js');
+const { createCommande } = require('../fonctions/commands/commandBuilder');
+
+const commande_json_path = './commands/annonce-command.json'
+
+module.exports = {
+    data: createCommande(commande_json_path),
+    async execute(interaction) {
+        //fonction
+    },
+};
