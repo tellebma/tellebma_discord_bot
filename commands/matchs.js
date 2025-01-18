@@ -15,7 +15,7 @@ module.exports = {
         try {
             // Récupération des options
             const dateString = interaction.options.getString('date'); // format dd/MM/yy
-            const today = new Date();
+            const today = new Date().setHours(0, 0, 0, 0);
             let date;
 
             if (dateString) {
@@ -60,9 +60,9 @@ module.exports = {
                         .setThumbnail(`attachment://gameIconUrl${index}.png`)
                         .setDescription(`**Compétition :** [${match.compet_clean}](${match.link})\n**Jeu :** ${match.game}`)
                         .addFields(
-                            { name: `${match.teamDomicile}`, value: ` `, inline: true },
-                            { name: 'Contre', value: ' ', inline: true },
-                            { name: `${match.teamExterieur}`, value: ` `, inline: true },
+                            { name: `   ${match.teamDomicile}`, value: ` `, inline: true },
+                            { name: '   Contre', value: ' ', inline: true },
+                            { name: `   ${match.teamExterieur}`, value: ` `, inline: true },
                         )
                         .setImage(`attachment://match${index}.png`)
                         .setFooter({ text: `Date : ${format(match.start, "EEEE dd MMMM yyyy HH:mm", { locale: fr })}` })

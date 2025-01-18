@@ -23,7 +23,7 @@ module.exports = {
             let filteredMatches = matchs;
             if (jeu) filteredMatches = filteredMatches.filter(match => match.game === jeu);
             if (compet) filteredMatches = filteredMatches.filter(match => match.competition === compet);
-
+            
             // Récupérer le prochain match
             const match = filteredMatches.sort((a, b) => a.start - b.start)[0];
 
@@ -39,23 +39,27 @@ module.exports = {
                 .setTitle(match.title)
                 .setThumbnail(`attachment://gameIconUrl.png`)
                 .setDescription(`**Compétition :** [${match.compet_clean}](${match.link})\n**Jeu :** ${match.game}`)
-                .addFields(
-                    { name: `   ${match.teamDomicile}`, value: ` `, inline: true },
-                    { name: '   Contre', value: ' ', inline: true },
-                    { name: `   ${match.teamExterieur}`, value: ` `, inline: true },
-                )
                 .setImage(`attachment://match.png`)
                 .setFooter({ text: `Date : ${format(match.start, "EEEE dd MMMM yyyy HH:mm", { locale: fr })}` })
                 .setURL(match.streamLink)
                 .setColor(match.color);
-        imageBuffer = await generateMatchImage(match);
-        attachments.push({ attachment: match.gameIconURL, name: `gameIconUrl.png` })
-        attachments.push({ attachment: imageBuffer, name: `match.png` })
-
+            if (match.teamDomicile){
+                embed.addFields(
+                    { name: `   ${match.teamDomicile}`, value: ` `, inline: true },
+                    { name: '   Contre', value: ' ', inline: true },
+                    { name: `   ${match.teamExterieur}`, value: ` `, inline: true },
+                );
+            } else {
+                embed.addFields(
+                    { name: ``, value: ` `, inline: true },
+                    { name: `${match.player}`, value: ' ', inline: true },
+                    { name: ``, value: ` `, inline: true },
+            );
+            }
             // Envoyer l'embed avec l'image
             return await interaction.reply({
                 embeds: [embed],
-                files: [{ attachment: imageBuffer, name: 'match.png' }]
+                files: [{ attachment: match.gameIconURL, name: `gameIconUrl.png` }, { attachment: imageBuffer, name: `match.png` }]
             });
 
         } catch (error) {

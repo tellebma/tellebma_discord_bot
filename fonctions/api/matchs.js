@@ -1,18 +1,20 @@
 const axios = require('axios');
 const { parseISO, isSameDay, getISOWeek, getDay, startOfDay } = require('date-fns');
-const { fr } = require('date-fns/locale');
+const { toZonedTime } = require('date-fns-tz');
+
+const timeZone = 'Europe/Paris';
 
 const GAME_MAPPING = {
-    TFT: 'TFT',
-    VCT: 'Valorant',
-    LEC: 'League Of Legends',
-    DIV2: 'League Of Legends',
-    VCL: 'Valorant',
-    RL: 'Rocket League',
-    LFL: 'League Of Legends',
-    'VCT-GC': 'Valorant',
-    'TK/SF': 'Tekken',
-    FTN: 'Fortnite'
+    TFT: "TFT",
+    VCT: "Valorant",
+    LEC: "League Of Legends",
+    DIV2: "League Of Legends",
+    VCL: "Valorant",
+    RL: "Rocket League",
+    LFL: "League Of Legends",
+    "VCT-GC": "Valorant",
+    "TK/SF": "Tekken",
+    FTN: "Fortnite"
 };
 const GAME_COLOR = {
     TFT: 0xfafa31,
@@ -53,6 +55,10 @@ const GAME_COMPET_CLEAN_NAME = {
 
 };
 
+function addMinutesToDate(date, minutes) {
+    return new Date(date.getTime() + minutes * 60000);
+}
+
 async function fetchMatches() {
     try {
         const response = await axios.get('https://api2.kametotv.fr/karmine/events');
@@ -63,12 +69,12 @@ async function fetchMatches() {
             title: event.title,
             competition: event.competition_name,
             teamDomicile: event.team_name_domicile || null,
-            teamExterieur: event.team_name_exterieur || null,
+            teamExterieur: event.team_name_exterieur || 'Une Equipe',
             logoDomicile: event.team_domicile === 'null' ? './images/Karmine_Corp.png' : event.team_domicile || null,
             logoExterieur: event.team_exterieur === 'null' ? null : event.team_exterieur || null,
             player: event.player !== 'null' ? event.player : null,
-            start: new Date(event.start),
-            end: new Date(event.end),
+            start: addMinutesToDate(toZonedTime(new Date(event.start), timeZone), 5),
+            end: addMinutesToDate(toZonedTime(new Date(event.end), timeZone), 5),
             link: event.link,
             streamLink: 'https://twitch.tv/'+event.streamLink,
             game: GAME_MAPPING[event.initial] || 'UNKNOWN',

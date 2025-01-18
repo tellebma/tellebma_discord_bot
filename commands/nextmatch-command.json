@@ -9,12 +9,13 @@
           "required": false,
           "type": "STRING",
           "choices": [
-              { "name": "Valorant", "value": "VALORANT" },
-              { "name": "LeagueOfLegends", "value": "LEAGUEOFLEGENDS" },
+              { "name": "Valorant", "value": "Valorant" },
+              { "name": "LeagueOfLegends", "value": "League Of Legends" },
               { "name": "TFT", "value": "TFT" },
-              { "name": "Rocket League", "value": "ROCKETLEAGUE" },
-              { "name": "Fortnite", "value": "FORTNITE" },
-              { "name": "Tekken 8", "value": "Tekken8" }
+              { "name": "Rocket League", "value": "Rocket League" },
+              { "name": "Fortnite", "value": "Fortnite" },
+              { "name": "Tekken 8", "value": "Tekken" }
+              
           ]
       },
       {
@@ -23,12 +24,12 @@
           "required": false,
           "type": "STRING",
           "choices": [
-              { "name": "VCT", "value": "VCT" },
-              { "name": "VLR", "value": "VLR" },
+              { "name": "VCT", "value": "ValorantVCT" },
+              { "name": "VCL", "value": "ValorantVCL" },
               { "name": "VCT-GC", "value": "VCT-GC" },
-              { "name": "LEC", "value": "LEC" },
-              { "name": "LFL", "value": "LFL" },
-              { "name": "DIV2", "value": "DIV2" }
+              { "name": "LEC", "value": "LeagueOfLegendsLEC" },
+              { "name": "LFL", "value": "LeagueOfLegendsLFL" },
+              { "name": "DIV2", "value": "LeagueOfLegendsDiv2" }
           ]
       }
   ],
