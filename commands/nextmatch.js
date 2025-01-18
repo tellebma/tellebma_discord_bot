@@ -1,8 +1,9 @@
 const { EmbedBuilder, MessageFlags } = require('discord.js');
 const { createCommande } = require('../fonctions/commands/commandBuilder');
-const { fetchMatches } = require('../fonctions/api/matchs');
+const { addDetailOnMatches } = require('../fonctions/matchs/utils')
+const { getNextMatch } = require('../fonctions/database/matchs')
 const { generateMatchImage } = require('../fonctions/matchs/image');
-const { parseISO, format } = require('date-fns');
+const { format } = require('date-fns');
 const { fr } = require('date-fns/locale');
 
 // Charger les données de la commande depuis le fichier JSON
@@ -16,17 +17,11 @@ module.exports = {
             const jeu = interaction.options.getString('jeu');
             const compet = interaction.options.getString('competition');
 
-            // Récupération de tous les matchs
-            const matchs = await fetchMatches();
-
-            // Filtrer par jeu et compétition si spécifiés
-            let filteredMatches = matchs;
-            if (jeu) filteredMatches = filteredMatches.filter(match => match.game === jeu);
-            if (compet) filteredMatches = filteredMatches.filter(match => match.competition === compet);
-            
-            // Récupérer le prochain match
-            const match = filteredMatches.sort((a, b) => a.start - b.start)[0];
-
+            console.log(`nextmatch - ${jeu} - ${compet}`)
+            let match = await getNextMatch(jeu, compet);
+            console.log(match.id);
+            match = addDetailOnMatches([match])[0];
+            console.log(match.id);
             if (!match) {
                 return await interaction.reply({ content: "Aucun match trouvé pour ces critères.", flags: MessageFlags.Ephemeral });
             }
@@ -45,15 +40,15 @@ module.exports = {
                 .setColor(match.color);
             if (match.teamDomicile){
                 embed.addFields(
-                    { name: `   ${match.teamDomicile}`, value: ` `, inline: true },
-                    { name: '   Contre', value: ' ', inline: true },
-                    { name: `   ${match.teamExterieur}`, value: ` `, inline: true },
+                    { name: ` ${match.teamDomicile}`, value: ` `, inline: true },
+                    { name: ' Contre', value: ' ', inline: true },
+                    { name: ` ${match.teamExterieur}`, value: ` `, inline: true },
                 );
             } else {
                 embed.addFields(
-                    { name: ``, value: ` `, inline: true },
-                    { name: `${match.player}`, value: ' ', inline: true },
-                    { name: ``, value: ` `, inline: true },
+                    { name: ` `, value: ` `, inline: true },
+                    { name: ` ${match.player}`, value: ' ', inline: true },
+                    { name: ` `, value: ` `, inline: true },
             );
             }
             // Envoyer l'embed avec l'image

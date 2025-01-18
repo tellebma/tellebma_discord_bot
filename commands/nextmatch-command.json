@@ -10,9 +10,9 @@
           "type": "STRING",
           "choices": [
               { "name": "Valorant", "value": "Valorant" },
-              { "name": "LeagueOfLegends", "value": "League Of Legends" },
+              { "name": "League Of Legends", "value": "LeagueOfLegends" },
               { "name": "TFT", "value": "TFT" },
-              { "name": "Rocket League", "value": "Rocket League" },
+              { "name": "Rocket League", "value": "RocketLeague" },
               { "name": "Fortnite", "value": "Fortnite" },
               { "name": "Tekken 8", "value": "Tekken" }
               
@@ -26,7 +26,7 @@
           "choices": [
               { "name": "VCT", "value": "ValorantVCT" },
               { "name": "VCL", "value": "ValorantVCL" },
-              { "name": "VCT-GC", "value": "VCT-GC" },
+              { "name": "VCT-GC", "value": "ValorantVCT_GC" },
               { "name": "LEC", "value": "LeagueOfLegendsLEC" },
               { "name": "LFL", "value": "LeagueOfLegendsLFL" },
               { "name": "DIV2", "value": "LeagueOfLegendsDiv2" }

@@ -1,5 +1,6 @@
 const { createCommande } = require('../fonctions/commands/commandBuilder');
-const { filterMatchesByDate } = require('../fonctions/api/matchs');
+const { getMatchesByDate } = require('../fonctions/database/matchs');
+const { addDetailOnMatches } = require('../fonctions/matchs/utils')
 const { generateMatchImage } = require('../fonctions/matchs/image');
 const { EmbedBuilder, MessageFlags } = require('discord.js');
 const { parse, isBefore, format } = require('date-fns');
@@ -39,7 +40,7 @@ module.exports = {
 
             // Récupérer les matchs du jour
             try {
-                const matchs = await filterMatchesByDate(date);
+                const matchs = addDetailOnMatches(await getMatchesByDate(date));
     
                 // Vérifier s'il n'y a pas de matchs
                 if (matchs.length === 0) {
@@ -52,22 +53,37 @@ module.exports = {
                 let embeds = [];
                 let attachments = [];
                 let match;
+                let embed
                 let imageBuffer;
                 for (let index = 0; index < matchs.length; index++) {
                     match = matchs[index];
-                    embeds.push(new EmbedBuilder()
+                    
+                    embed = new EmbedBuilder()
                         .setTitle(match.title)
                         .setThumbnail(`attachment://gameIconUrl${index}.png`)
                         .setDescription(`**Compétition :** [${match.compet_clean}](${match.link})\n**Jeu :** ${match.game}`)
-                        .addFields(
-                            { name: `   ${match.teamDomicile}`, value: ` `, inline: true },
-                            { name: '   Contre', value: ' ', inline: true },
-                            { name: `   ${match.teamExterieur}`, value: ` `, inline: true },
-                        )
                         .setImage(`attachment://match${index}.png`)
                         .setFooter({ text: `Date : ${format(match.start, "EEEE dd MMMM yyyy HH:mm", { locale: fr })}` })
                         .setURL(match.streamLink)
-                        .setColor(match.color));
+                        .setColor(match.color);
+                    
+                    console.log(match.teamDomicile);
+                    console.log(match.player);
+                    if (match.teamDomicile){
+                        embed.addFields(
+                            { name: ` ${match.teamDomicile}`, value: ` `, inline: true },
+                            { name: ' Contre', value: ' ', inline: true },
+                            { name: ` ${match.teamExterieur}`, value: ` `, inline: true },
+                        );
+                    } else {
+                        embed.addFields(
+                            { name: ` `, value: ` `, inline: true },
+                            { name: ` ${match.player}`, value: ' ', inline: true },
+                            { name: ` `, value: ` `, inline: true },
+                        );
+                    }
+
+                    embeds.push(embed);
                     imageBuffer = await generateMatchImage(match);
                     attachments.push({ attachment: match.gameIconURL, name: `gameIconUrl${index}.png` })
                     attachments.push({ attachment: imageBuffer, name: `match${index}.png` })
