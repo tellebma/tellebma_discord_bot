@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  tellebma-postgres:
+    image: postgres:latest
+    container_name: database
+    environment:
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      POSTGRES_DB: "${POSTGRES_DB}"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - /mnt/user/fast/discordBot/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - app-network
+    restart: always
+
+  tellebma-bot:
+    image: tellebma/discord_bot:latest  # Utilisation de l'image depuis Docker Hub
+    container_name: tellebma-bot
+    environment:
+      DISCORD_TOKEN: "${DISCORD_TOKEN}"
+      DISCORD_CLIENT_ID: "${DISCORD_CLIENT_ID}"
+      FICHIER_UPDATE_COMMANDE: "${FICHIER_UPDATE_COMMANDE}"
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      POSTGRES_DB: "${POSTGRES_DB}"
+    volumes:
+      - /mnt/user/fast/discordBot/Shared_folder:/usr/src/app/Shared_folder
+    depends_on:
+      - tellebma-postgres
+    networks:
+      - app-network
+    restart: always
+
+  tellebma-pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_DEFAULT_EMAIL: "${PGADMIN_EMAIL}"
+      PGADMIN_DEFAULT_PASSWORD: "${PGADMIN_PASSWORD}"
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin  # Stocker la config ici
+      - /mnt/user/fast/discordBot/pgadmin/servers.json.template:/tmp/servers.json.template  # Placer le template ailleurs
+      - /mnt/user/fast/discordBot/pgadmin/entrypoint.sh:/docker-entrypoint.sh  # Script d'init  
+    entrypoint: ["/usr/bin/env", "sh", "/docker-entrypoint.sh"]
+    depends_on:
+      - tellebma-postgres
+    networks:
+      - app-network
+    restart: always
+
+volumes:
+  pgdata:
+  pgadmin-data:
+
+networks:
+  app-network:
