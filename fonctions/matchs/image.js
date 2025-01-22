@@ -1,6 +1,4 @@
 const { createCanvas, loadImage } = require('canvas');
-const { format } = require('date-fns');
-const { fr } = require('date-fns/locale');
 
 async function generateMatchImage(match) {
     const canvas = createCanvas(600, 160);

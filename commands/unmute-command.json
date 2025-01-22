@@ -1,0 +1,17 @@
+{
+    "name": "unmute",
+    "description": "unMute une personne",
+    "context": ["Guild"],
+    "options": [
+      {
+        "name": "user",
+        "description": "Personne à mute.",
+        "required": true,
+        "type": "USER"
+      }
+    ],
+    "permissions": {
+      "slashCommandPermissions": "ALL"
+    }
+  }
+  

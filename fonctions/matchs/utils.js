@@ -1,8 +1,8 @@
-const { toZonedTime } = require('date-fns-tz');
-
-const timeZone = 'Europe/Paris';
-
-
+const { generateMatchImage } = require('../matchs/image');
+const moment = require('moment');
+const { EmbedBuilder } = require('discord.js')
+const { format } = require('date-fns');
+const { fr } = require('date-fns/locale');
 
 const GAME_MAPPING = {
     TFT: "TFT",
@@ -36,7 +36,7 @@ const GAME_LINK = {
     DIV2: './images/LOLDiv2.png',
     VCL: './images/VCL_France.png',
     RL: './images/RL.png',
-    LFL: './images/lfl.png',
+    LFL: './images/LFL.png',
     'VCT-GC': './images/Valorant_GC.png',
     'TK/SF': './images/Takken.png',
     FTN: './images/Fortnite.png'
@@ -88,10 +88,117 @@ function addDetailOnMatches(events) {
     }
 }
 
+async function generateEmbedAlert(match) {
+    const embed = new EmbedBuilder()
+        .setTitle("▶️"+match.title)
+        .setThumbnail(`attachment://gameIconUrl.png`)
+        .setDescription(`**Compétition :** [${match.compet_clean}](${match.link})\n**Jeu :** ${match.game}`)
+        .setImage(`attachment://match.png`)
+        .setFooter({ text: `Date : ${format(match.start, "EEEE dd MMMM yyyy HH:mm", { locale: fr })}` })
+        .setURL(match.streamLink)
+        .setColor(match.color);
+    if (match.player){
+        embed.addFields(
+            { name: ` `, value: ` `, inline: true },
+            { name: ` ${match.player}`, value: ` `, inline: true },
+            { name: ` `, value: ` `, inline: true },
+        )
+    }else{
+        embed.addFields(
+                { name: ` ${match.teamDomicile}`, value: ` `, inline: true },
+                { name: ` Contre`, value: ` `, inline: true },
+                { name: ` ${match.teamExterieur}`, value: ` `, inline: true },
+        )
+    }
+    imageBuffer = await generateMatchImage(match);
+    attachmentPj = [
+        { attachment: match.gameIconURL, name: `gameIconUrl.png` },
+        { attachment: imageBuffer, name: `match.png` }
+    ];
+    return [embed, attachmentPj]
+}
 
+async function generateEmbedResult(match) {
+    embed = new EmbedBuilder()
+        .setTitle("🔵"+match.title)
+        .setThumbnail(`attachment://gameIconUrl.png`)
+        .setDescription(`**Compétition :** [${match.compet_clean}](${match.link})\n**Jeu :** ${match.game}`)
+        .setImage(`attachment://match.png`)
+        .setFooter({ text: `Date : ${format(match.start, "EEEE dd MMMM yyyy HH:mm", { locale: fr })}` })
+        .setURL(match.streamLink)
+        .setColor(match.color);
+    if (match.player){
+        embed.addFields(
+            { name: ` `, value: ` `, inline: true },
+            { name: ` ${match.player}`, value: `${match.scoreDomicile}`, inline: true },
+            { name: ` `, value: ` `, inline: true },
+        )
+    }else{
+        if (!match.scoreExterieur) {
+            embed.addFields(
+                { name: ` ${match.teamDomicile}`, value: ` `, inline: true },
+                { name: ` Contre`, value: ` ${match.scoreDomicile}`, inline: true },
+                { name: ` ${match.teamExterieur}`, value: ` `, inline: true },
+            )
+        } else {
+            embed.addFields(
+                { name: ` ${match.teamDomicile}`, value: ` ${match.scoreDomicile}`, inline: true },
+                { name: ` Contre`, value: ` à`, inline: true },
+                { name: ` ${match.teamExterieur}`, value: ` ${match.scoreExterieur}`, inline: true },
+            )
+        }
+    }
+        
+        
+    imageBuffer = await generateMatchImage(match);
+    attachmentPj = [
+        { attachment: match.gameIconURL, name: `gameIconUrl.png` },
+        { attachment: imageBuffer, name: `match.png` }
+    ];
+    return [embed, attachmentPj];
+}
 
+async function manageBotPresence(bot, events) {
+    try {
+        const now = moment();
+        console.log("💠 1 Mise a jour de la présence a venir");
+        events.forEach(event => {
+            console.log(`💠 INIT ${event.id}  Mise a jour de la présence a venir `);
+            // Calcul de l'heure de début du match (1 heure avant)
+            const startTime = moment(event.start);
+            const endTime = event.end ? moment(event.end) : startTime.clone().add(2, 'hours'); // Si pas de date de fin, on prend début + 2 heures
 
+            const liveStartTime = startTime.clone().subtract(1, 'hour'); // 1 heure avant le début du match
+
+            // Vérifier si nous devons activer la présence à 1h avant le début
+            if (now.isSameOrAfter(liveStartTime) && now.isBefore(startTime)) {
+                console.log("💠 Mise a jour de la présence discord");
+                bot.user.setPresence({
+                    activities: [
+                        { name: `Début ${event.title}`, type: 'STREAMING', url: `https://www.twitch.tv/${event.stream_link || ''}` }
+                    ],
+                    status: 'online'
+                });
+            }
+
+            // Vérifier si nous devons retirer la présence à la fin de la durée
+            if (now.isSameOrAfter(endTime)) {
+                console.log("💠 Suppression de la présence discord");
+                bot.user.setPresence({
+                    activities: [],
+                    status: 'Idle'
+                });
+            }
+        });
+    } catch (error) {
+        console.error('Erreur lors de la gestion de la présence du bot:', error);
+    }
+}
 
 module.exports = {
-    addDetailOnMatches
+    addDetailOnMatches,
+    generateEmbedAlert,
+    generateEmbedResult,
+    manageBotPresence,
+    manageBotPresence
 }

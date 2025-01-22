@@ -1,6 +1,6 @@
 const axios = require('axios');
 const { upsertMatch } = require('../database/matchs')
-
+const moment = require('moment');
 
 
 async function fetchMatches() {
@@ -10,6 +10,24 @@ async function fetchMatches() {
 
         for (let index = 0; index < events.length; index++) {
             const event = events[index];
+            
+            // Remplacer "null" par null
+            for (const key in event) {
+                if (event.hasOwnProperty(key)) {
+                    if (event[key] === "null") {
+                        event[key] = null;
+                    }
+                }
+            }
+
+            if (event.start) {
+                event.start = moment(event.start).add(1, 'hours').add(5, 'minutes').toISOString(); // Ajouter 1h05
+            }
+
+            if (event.end) {
+                event.end = moment(event.end).add(1, 'hours').add(5, 'minutes').toISOString(); // Ajouter 1h05
+            }
+
             // Suppression des doublons dans la liste des joueurs
             if (event.player) {
                 const uniquePlayers = [...new Set(event.player.split(";"))];
@@ -38,6 +56,16 @@ async function fetchResults() {
 
         for (let index = 0; index < events.length; index++) {
             const event = events[index];
+            
+            // Remplacer "null" ou "[null]" par null
+            for (const key in event) {
+                if (event.hasOwnProperty(key)) {
+                    if (event[key] === "null") {
+                        event[key] = null;
+                    }
+                }
+            }
+            
             // Suppression des doublons dans la liste des joueurs
             if (event.player) {
                 const uniquePlayers = [...new Set(event.player.split(";"))];

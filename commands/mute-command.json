@@ -1,0 +1,32 @@
+{
+    "name": "mute",
+    "description": "Mute une personne",
+    "context": ["Guild"],
+    "options": [
+      {
+        "name": "user",
+        "description": "Personne à mute.",
+        "required": true,
+        "type": "USER"
+      },
+      {
+        "name": "duree",
+        "description": "Durée du mute",
+        "required": true,
+        "type": "INTEGER",
+        "choices": [
+          { "name": "10 minutes", "value": 10 },
+          { "name": "20 minutes", "value": 20 },
+          { "name": "30 minutes", "value": 30 },
+          { "name": "1 heure", "value": 60 },
+          { "name": "2 heures", "value": 120 },
+          { "name": "1 jour", "value": 1440 },
+          { "name": "10 jours", "value": 14400 }
+        ]
+      }
+    ],
+    "permissions": {
+      "slashCommandPermissions": "ALL"
+    }
+  }
+  

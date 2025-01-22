@@ -13,28 +13,31 @@ async function upsertMatch(match) {
 
         // Insertion ou mise à jour avec `ON CONFLICT`
         const query = `
-            INSERT INTO events (id, title, initial, competition_name, team_domicile, team_exterieur, 
-                                team_name_domicile, team_name_exterieur, score_domicile, score_exterieur, 
-                                player, date_start, date_end, link, has_notif_been_send, has_result_been_send, stream_link)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
-            ON CONFLICT (id) 
-            DO UPDATE SET 
-                title = EXCLUDED.title,
-                initial = EXCLUDED.initial,
-                competition_name = EXCLUDED.competition_name,
-                team_domicile = EXCLUDED.team_domicile,
-                team_exterieur = EXCLUDED.team_exterieur,
-                team_name_domicile = EXCLUDED.team_name_domicile,
-                team_name_exterieur = EXCLUDED.team_name_exterieur,
-                score_domicile = EXCLUDED.score_domicile,
-                score_exterieur = EXCLUDED.score_exterieur,
-                player = EXCLUDED.player,
-                date_start = EXCLUDED.date_start,
-                date_end = EXCLUDED.date_end,
-                link = EXCLUDED.link,
-                has_notif_been_send = EXCLUDED.has_notif_been_send,
-                has_result_been_send = EXCLUDED.has_result_been_send,
-                stream_link = EXCLUDED.stream_link;
+        INSERT INTO events (
+            id, title, initial, competition_name, team_domicile, team_exterieur, 
+            team_name_domicile, team_name_exterieur, score_domicile, score_exterieur, 
+            player, date_start, date_end, link, has_notif_been_send, has_result_been_send, stream_link
+        ) 
+        VALUES (
+            $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 
+            $11, $12, $13, $14, $15, $16, $17
+        )
+        ON CONFLICT (id) 
+        DO UPDATE SET 
+            title = COALESCE(EXCLUDED.title, events.title),
+            initial = COALESCE(EXCLUDED.initial, events.initial),
+            competition_name = COALESCE(EXCLUDED.competition_name, events.competition_name),
+            team_domicile = COALESCE(EXCLUDED.team_domicile, events.team_domicile),
+            team_exterieur = COALESCE(EXCLUDED.team_exterieur, events.team_exterieur),
+            team_name_domicile = COALESCE(EXCLUDED.team_name_domicile, events.team_name_domicile),
+            team_name_exterieur = COALESCE(EXCLUDED.team_name_exterieur, events.team_name_exterieur),
+            score_domicile = COALESCE(EXCLUDED.score_domicile, events.score_domicile),
+            score_exterieur = COALESCE(EXCLUDED.score_exterieur, events.score_exterieur),
+            player = COALESCE(EXCLUDED.player, events.player),
+            date_start = COALESCE(EXCLUDED.date_start, events.date_start),
+            date_end = COALESCE(EXCLUDED.date_end, events.date_end),
+            link = COALESCE(EXCLUDED.link, events.link),
+            stream_link = COALESCE(EXCLUDED.stream_link, events.stream_link);        
         `;
 
         const values = [
@@ -115,8 +118,8 @@ async function getNextMatch(jeu, compet) {
 
 async function checkUpcomingMatches() {
     try {
-        // Heure actuelle + 1 heure
-        const currentTimePlusOneHour = new Date(new Date().getTime() + 60 * 60 * 1000);
+        // Heure actuelle + 1 heure (2h mais 1h car ??? jsp)
+        const currentTimePlusOneHour = new Date(new Date().getTime() + 120 * 60 * 1000);
         
         // Format de la date pour la requête (YYYY-MM-DD HH:MM:SS)
         const formattedTimePlusOneHour = currentTimePlusOneHour.toISOString().slice(0, 19).replace('T', ' ');
@@ -127,17 +130,18 @@ async function checkUpcomingMatches() {
             SELECT * 
             FROM events 
             WHERE has_notif_been_send = false 
-              AND date_start <= $1 
+                AND date_start >= NOW()  
+                AND date_start <= $1 
             ORDER BY date_start ASC;
         `;
 
         const { rows } = await pool.query(query, [formattedTimePlusOneHour]);
 
         if (rows.length > 0) {
-            console.log(`Matchs à notifier dans une heure :`, rows);
+            console.log(`Matchs à notifier dans une heure  :`, rows);
             return rows;
         } else {
-            console.log('Aucun match à notifier dans une heure.');
+            console.log(`Aucun match à notifier dans une heure. (${formattedTimePlusOneHour})`);
             return [];
         }
     } catch (error) {
@@ -168,14 +172,16 @@ async function checkNewResults() {
         const query = `
             SELECT * 
             FROM events 
-            WHERE has_result_been_send = false 
+            WHERE has_notif_been_send = true
+			    AND has_result_been_send = false
+                AND date_start > NOW() - INTERVAL '1 week'
             ORDER BY date_start ASC;
         `;
 
         const { rows } = await pool.query(query);
 
         if (rows.length > 0) {
-            console.log('Matchs avec résultats non envoyés :', rows);
+            console.log('Matchs avec résultats non envoyés :', rows.length);
             return rows;
         } else {
             console.log('Aucun match avec des résultats non envoyés.');
