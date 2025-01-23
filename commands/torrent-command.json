@@ -1,0 +1,17 @@
+{
+    "name": "torrent",
+    "description": "uploader un fixhier torrent",
+    "context": ["Guild"],
+    "options": [
+      {
+        "name": "torrent",
+        "description": "fichier torrent.",
+        "required": true,
+        "type": "FILE"
+      }
+    ],
+    "permissions": {
+      "slashCommandPermissions": "ADMINISTRATOR"
+    }
+  }
+  
