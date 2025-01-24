@@ -174,6 +174,7 @@ async function checkNewResults() {
             FROM events 
             WHERE has_notif_been_send = true
 			    AND has_result_been_send = false
+                AND score_domicile IS NOT NULL
                 AND date_start > NOW() - INTERVAL '1 week'
             ORDER BY date_start ASC;
         `;

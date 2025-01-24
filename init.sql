@@ -22,7 +22,7 @@ CREATE TABLE events (
 );
 
 -- Index pour accélérer les requêtes de tri/filtrage sur les dates
-CREATE INDEX idx_events_start ON events(start);
+CREATE INDEX idx_events_start ON events(date_start);
 CREATE INDEX idx_events_competition ON events(competition_name);
 
 
