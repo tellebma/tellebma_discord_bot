@@ -1,0 +1,27 @@
+{
+  "name": "player",
+  "description": "Affiche les informations sur les joueurs",
+  "context": ["Guild"],
+  "options": [
+    {
+      "name": "competition",
+      "description": "compet des joueurs a afficher",
+      "required": true,
+      "type": "STRING",
+      "choices": [
+        
+          { "name": "LEC", "value": "LeagueOfLegendsLEC" },
+          { "name": "LFL", "value": "LeagueOfLegendsLFL" },
+          { "name": "DIV2", "value": "LeagueOfLegendsDiv2" },
+          { "name": "TFT", "value": "TFT" },
+          { "name": "Rocket League", "value": "RocketLeague" },
+          { "name": "Valorant VCT GC", "value": "ValorantVCT_GC" },
+          { "name": "Valorant VCT LOCK IN (VCL ?)", "value": "ValorantVCL" },
+          { "name": "Valorant VCT", "value": "ValorantVCT" }
+        ]
+    }
+  ],
+  "permissions": {
+      "slashCommandPermissions": "ALL"
+  }
+}

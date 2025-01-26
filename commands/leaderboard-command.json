@@ -1,0 +1,27 @@
+{
+  "name": "leaderboard",
+  "description": "Affiche le score de l'équipe",
+  "context": ["Guild"],
+  "options": [
+    {
+      "name": "team",
+      "description": "Equipe",
+      "required": true,
+      "type": "STRING",
+      "choices":
+        [
+          { "name": "LEC (pas de donnée---)", "value": "LeagueOfLegendsLEC" },
+          { "name": "LFL", "value": "LeagueOfLegendsLFL" },
+          { "name": "DIV2", "value": "LeagueOfLegendsDiv2" },
+          { "name": "TFT", "value": "TFT" },
+          { "name": "Rocket League", "value": "RocketLeague" },
+          { "name": "Valorant VCT GC", "value": "ValorantVCT_F" },
+          { "name": "Valorant VCT LOCK IN (VCL ?)", "value": "ValorantVCTLOCKIN" },
+          { "name": "Valorant VCT", "value": "ValorantVCT_M" }
+        ]
+  }
+  ],
+  "permissions": {
+      "slashCommandPermissions": "ALL"
+  }
+}

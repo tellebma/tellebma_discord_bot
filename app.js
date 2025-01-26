@@ -132,7 +132,7 @@ const runDeployScript = () => {
 
 // Gestion des erreurs non capturées
 process.on('uncaughtException', (error) => {
-    console.error('Erreur non gérée :', error);
+    console.error('❌Erreur non gérée :', error);
 });
 
 process.on('unhandledRejection', (reason, promise) => {
@@ -140,5 +140,5 @@ process.on('unhandledRejection', (reason, promise) => {
 });
 
 bot.on('error', (error) => {
-    console.error('Erreur client Discord :', error);
+    console.error('❌Erreur client Discord :', error);
 });

@@ -1,0 +1,9 @@
+{
+  "name": "checkapi",
+  "description": "Verifie le fonctionnement de l'api KC",
+  "context": ["Guild"],
+  "options": [],
+  "permissions": {
+      "slashCommandPermissions": "ALL"
+  }
+}

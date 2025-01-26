@@ -96,7 +96,7 @@ module.exports = {
                 });
             } catch (error) {
                 // Si aucun match n'est trouvé, envoyer un message d'erreur
-                console.error('Erreur lors de la récupération des matchs :', error);
+                console.error('❌Erreur lors de la récupération des matchs :', error);
                 return await interaction.reply({
                     content: `Aucun match trouvé pour la date ${formattedDate}.`,
                     flags: MessageFlags.Ephemeral
@@ -104,9 +104,9 @@ module.exports = {
             }
 
         } catch (error) {
-            console.error('Erreur lors de l\'exécution de la commande :', error);
+            console.error('❌Erreur lors de l\'exécution de la commande :', error);
             return await interaction.reply({
-                content: "Une erreur s'est produite lors du traitement de votre demande.",
+                content: "❌Une erreur s'est produite lors du traitement de votre demande.",
                 flags: MessageFlags.Ephemeral
             });
         }

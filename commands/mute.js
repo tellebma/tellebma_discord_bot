@@ -40,7 +40,7 @@ module.exports = {
                 content: `✅L'utilisateur ${user.username} a été muté jusqu'au ${expirationFormatted}.`,
             });
         } catch (error) {
-            console.error('Erreur lors de l\'exécution de la commande :', error);
+            console.error('❌Erreur lors de l\'exécution de la commande :', error);
             return await interaction.reply({
                 content: "❌Une erreur s'est produite lors du traitement de votre demande.",
                 flags: MessageFlags.Ephemeral

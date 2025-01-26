@@ -83,7 +83,7 @@ function addDetailOnMatches(events) {
             hasResultBeenSend: event.has_result_been_send || false
         }));
     } catch (error) {
-        console.error('Erreur lors de la récupération des matchs:', error);
+        console.error('❌Erreur lors de la récupération des matchs:', error);
         return [];
     }
 }
@@ -191,7 +191,7 @@ async function manageBotPresence(bot, events) {
             }
         });
     } catch (error) {
-        console.error('Erreur lors de la gestion de la présence du bot:', error);
+        console.error('❌Erreur lors de la gestion de la présence du bot:', error);
     }
 }
 

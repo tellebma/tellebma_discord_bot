@@ -79,7 +79,7 @@ async function getMatchesByDate(date) {
         const { rows } = await pool.query(query, [formattedDate]);
         return rows;
     } catch (error) {
-        console.error('Erreur lors de la récupération des matchs:', error);
+        console.error('❌Erreur lors de la récupération des matchs:', error);
         return [];
     }
 }
@@ -145,7 +145,7 @@ async function checkUpcomingMatches() {
             return [];
         }
     } catch (error) {
-        console.error('Erreur lors de la vérification des matchs à notifier:', error);
+        console.error('❌Erreur lors de la vérification des matchs à notifier:', error);
         return [];
     }
 }
@@ -189,7 +189,7 @@ async function checkNewResults() {
             return [];
         }
     } catch (error) {
-        console.error('Erreur lors de la vérification des résultats non envoyés :', error);
+        console.error('❌Erreur lors de la vérification des résultats non envoyés :', error);
         return [];
     }
 }

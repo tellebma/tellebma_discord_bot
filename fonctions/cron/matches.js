@@ -1,5 +1,5 @@
 const cron = require('node-cron');
-const { fetchMatches, fetchResults } = require('../api/matchs')
+const { fetchAllInfos } = require('../api/matchs')
 const { addDetailOnMatches, generateEmbedAlert, generateEmbedResult, manageBotPresence } = require('../matchs/utils')
 const { checkUpcomingMatches, markNotificationAsSent, checkNewResults, markResultAsSent } = require('../database/matchs')
 const { NOTIF_CHANNEL, RESULT_CHANNEL } = require('../config/channel')
@@ -8,15 +8,7 @@ function set_cron_get_matchs(bot) {
     // Planification d'une tâche toutes les 5 minutes
     cron.schedule('*/30 * * * *', async () => {
         console.log(`1️⃣[CRON] mise a jour des matchs`);
-        fetchMatches()
-    });
-}
-
-function set_cron_get_results(bot) {
-    // Planification d'une tâche toutes les 5 minutes
-    cron.schedule('*/30 * * * *', async () => {
-        console.log(`2️⃣[CRON] mise a jour des résultats`);
-        fetchResults()
+        fetchAllInfos()
     });
 }
 
@@ -133,7 +125,6 @@ function set_cron_check_new_results(bot) {
 
 module.exports = {
     set_cron_get_matchs,
-    set_cron_get_results,
     set_cron_check_new_events,
     set_cron_check_new_results
 }

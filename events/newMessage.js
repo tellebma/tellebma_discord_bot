@@ -33,7 +33,7 @@ module.exports = {
                 });
             }
         } catch (error) {
-            console.error('Erreur lors de l\'event nouveau message:', error);
+            console.error('❌Erreur lors de l\'event nouveau message:', error);
         }
     },
 };
