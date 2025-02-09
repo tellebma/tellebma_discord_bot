@@ -1,0 +1,17 @@
+{
+    "name": "spammention",
+    "description": "Mentionne une personne toutes les 10 secondes",
+    "context": ["Guild"],
+    "options": [
+      {
+        "name": "user",
+        "description": "Personne à mute.",
+        "required": true,
+        "type": "USER"
+      }
+    ],
+    "permissions": {
+      "slashCommandPermissions": "ALL"
+    }
+  }
+  
