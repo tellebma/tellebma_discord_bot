@@ -29,6 +29,7 @@ module.exports = {
                     count++;
                 }
             }, 20000);
+            await interaction.channel.send(`Fin des mentions`);
         } catch (error) {
             console.error('❌ Erreur lors de l\'exécution de la commande :', error);
             return await interaction.reply({

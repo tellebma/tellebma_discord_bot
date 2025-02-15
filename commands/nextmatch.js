@@ -54,7 +54,8 @@ module.exports = {
             // Envoyer l'embed avec l'image
             return await interaction.reply({
                 embeds: [embed],
-                files: [{ attachment: match.gameIconURL, name: `gameIconUrl.png` }, { attachment: imageBuffer, name: `match.png` }]
+                files: [{ attachment: match.gameIconURL, name: `gameIconUrl.png` }, { attachment: imageBuffer, name: `match.png` }],
+                flags: MessageFlags.Ephemeral
             });
 
         } catch (error) {
